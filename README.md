@@ -15,19 +15,7 @@
 
 ## 部署模式
 
-LLM Gateway 支持两种部署模式：
-
-### 1. 单体模式（单进程）
-
-所有适配器运行在单个进程中。简单但局限于单台机器。
-
-```bash
-llm-gateway server --port 8000
-```
-
-### 2. Controller-Worker 模式（分布式）
-
-分布式架构，Controller 和 Worker 进程分离。
+LLM Gateway 采用 Controller-Worker 分布式架构：
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -63,22 +51,6 @@ uv pip install -e ".[dev]"
 
 ```bash
 pip install -e ".[dev]"
-```
-
-### 单体模式
-
-创建 `.env` 文件：
-
-```env
-OPENAI_API_KEY=your_openai_key
-ANTHROPIC_API_KEY=your_anthropic_key
-OLLAMA_HOST=http://localhost:11434
-```
-
-启动服务：
-
-```bash
-llm-gateway server --port 8000
 ```
 
 ### Controller-Worker 模式
@@ -185,16 +157,6 @@ curl "http://localhost:8000/internal/workers?model_id=llama3"
 
 ## 架构
 
-### 单体模式
-
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
-│   客户端    │────▶│   Gateway    │────▶│    适配器       │
-│  (OpenAI    │     │  (FastAPI)   │     │ (OpenAI/Claude/ │
-│  格式)      │◄────│              │◀────│  Ollama 等)     │
-└─────────────┘     └──────────────┘     └─────────────────┘
-```
-
 ### Controller-Worker 模式
 
 ```
@@ -241,8 +203,6 @@ curl "http://localhost:8000/internal/workers?model_id=llama3"
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| `HOST` | `0.0.0.0` | 服务主机（单体模式） |
-| `PORT` | `8000` | 服务端口（单体模式） |
 | `CONTROLLER_HOST` | `0.0.0.0` | Controller 主机 |
 | `CONTROLLER_PORT` | `8000` | Controller 端口 |
 | `INTERNAL_API_KEY` | - | 内部端点 API 密钥 |

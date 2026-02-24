@@ -17,9 +17,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
-    # Server settings
-    host: str = Field(default="0.0.0.0", description="Server host")
-    port: int = Field(default=8000, description="Server port")
+    # Logging
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = Field(
         default="INFO",
         description="Logging level",

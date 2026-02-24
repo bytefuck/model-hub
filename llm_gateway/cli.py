@@ -82,25 +82,5 @@ def worker(
     )
 
 
-@app.command()
-def server(
-    host: str | None = typer.Option(None, "--host", "-h", help="Host to bind to"),
-    port: int | None = typer.Option(None, "--port", "-p", help="Port to bind to"),
-    log_level: str | None = typer.Option(None, "--log-level", help="Log level"),
-) -> None:
-    """Start the standalone server (single process mode)."""
-    from llm_gateway.server import main
-
-    if host:
-        settings.host = host
-    if port:
-        settings.port = port
-    if log_level:
-        settings.log_level = log_level.upper()
-
-    typer.echo(f"Starting standalone server on {settings.host}:{settings.port}")
-    main()
-
-
 if __name__ == "__main__":
     app()
