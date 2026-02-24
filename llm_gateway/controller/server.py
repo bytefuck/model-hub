@@ -194,7 +194,7 @@ async def deregister_worker(
 # ============================================================================
 
 
-@app.post("/v1/chat/completions")
+@app.post("/v1/chat/completions",response_model=ChatCompletionResponse)
 async def chat_completions(
     request: ChatCompletionRequest,
 ) -> ChatCompletionResponse | StreamingResponse:
@@ -296,3 +296,19 @@ async def root() -> dict[str, Any]:
             "workers": "/internal/workers",
         },
     }
+
+def main() -> None:
+    """Run the server."""
+    import uvicorn
+
+    uvicorn.run(
+        "llm_gateway.controller.server:app",
+        host=settings.host,
+        port=settings.port,
+        log_level=settings.log_level.lower(),
+        reload=False,
+    )
+
+
+if __name__ == "__main__":
+    main()
