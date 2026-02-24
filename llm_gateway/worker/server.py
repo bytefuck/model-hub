@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import signal
+import sys
 import uuid
 from contextlib import asynccontextmanager
 from typing import Any
@@ -64,11 +65,12 @@ async def lifespan(app: FastAPI):
     await registration_client.start()
 
     loop = asyncio.get_event_loop()
-    for sig in (signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(
-            sig,
-            lambda: asyncio.create_task(_handle_shutdown()),
-        )
+    if sys.platform != "win32":
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(
+                sig,
+                lambda: asyncio.create_task(_handle_shutdown()),
+            )
 
     yield
 

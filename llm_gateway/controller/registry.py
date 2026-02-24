@@ -32,7 +32,8 @@ class WorkerRegistry:
         """Register a new worker."""
         async with self._lock:
             if record.worker_id in self._by_id:
-                raise ValueError(f"Worker {record.worker_id} already registered")
+                logger.info("worker_already_registered", worker_id=record.worker_id)
+                #raise ValueError(f"Worker {record.worker_id} already registered")
 
             self._by_id[record.worker_id] = record
 

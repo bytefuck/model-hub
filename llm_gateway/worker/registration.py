@@ -122,6 +122,12 @@ class RegistrationClient:
             json=payload,
             headers=headers,
         )
+        logger.info(
+            "registration_response",
+            worker_id=self.worker_id,
+            status_code=response.status_code,
+            response=response.json(),
+        )
         response.raise_for_status()
 
     async def _deregister(self) -> None:
