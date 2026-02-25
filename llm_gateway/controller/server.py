@@ -160,7 +160,9 @@ async def worker_heartbeat(
             status=request.status,
         )
     except KeyError:
-        raise HTTPException(status_code=404, detail=f"Worker {request.worker_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Worker {request.worker_id} not found"
+        )
 
     return {"status": "ok"}
 
@@ -194,7 +196,7 @@ async def deregister_worker(
 # ============================================================================
 
 
-@app.post("/v1/chat/completions",response_model=ChatCompletionResponse)
+@app.post("/v1/chat/completions", response_model=ChatCompletionResponse)
 async def chat_completions(
     request: ChatCompletionRequest,
 ) -> ChatCompletionResponse | StreamingResponse:
@@ -297,14 +299,15 @@ async def root() -> dict[str, Any]:
         },
     }
 
+
 def main() -> None:
     """Run the server."""
     import uvicorn
 
     uvicorn.run(
         "llm_gateway.controller.server:app",
-        host=settings.host,
-        port=settings.port,
+        host=settings.controller_host,
+        port=settings.controller_port,
         log_level=settings.log_level.lower(),
         reload=False,
     )

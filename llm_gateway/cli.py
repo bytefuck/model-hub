@@ -38,9 +38,13 @@ def worker(
     controller_url: str | None = typer.Option(
         None, "--controller-url", "-c", help="Controller URL"
     ),
-    backend_url: str | None = typer.Option(None, "--backend-url", "-b", help="Backend URL"),
+    backend_url: str | None = typer.Option(
+        None, "--backend-url", "-b", help="Backend URL"
+    ),
     port: int | None = typer.Option(None, "--port", "-p", help="Port to bind to"),
-    capacity: int | None = typer.Option(None, "--capacity", help="Max concurrent requests"),
+    capacity: int | None = typer.Option(
+        None, "--capacity", help="Max concurrent requests"
+    ),
     log_level: str | None = typer.Option(None, "--log-level", help="Log level"),
 ) -> None:
     """Start a worker server."""
@@ -66,10 +70,14 @@ def worker(
         typer.echo("Error: --model-id or MODEL_ID environment variable is required")
         raise typer.Exit(1)
     if not settings.backend_url:
-        typer.echo("Error: --backend-url or BACKEND_URL environment variable is required")
+        typer.echo(
+            "Error: --backend-url or BACKEND_URL environment variable is required"
+        )
         raise typer.Exit(1)
 
-    typer.echo(f"Starting worker {settings.worker_id} for model {settings.model_id} on port {port}")
+    typer.echo(
+        f"Starting worker {settings.worker_id} for model {settings.model_id} on port {port}"
+    )
     typer.echo(f"Controller: {settings.controller_url}")
     typer.echo(f"Backend: {settings.backend_url}")
 
