@@ -10,10 +10,14 @@ from pydantic import BaseModel, Field
 class Message(BaseModel):
     """Chat message."""
 
-    role: Literal["system", "user", "assistant"] = Field(
+    role: Literal["system", "user", "assistant", "tool"] = Field(
         description="Role of the message sender",
     )
-    content: str = Field(description="Content of the message")
+    content: str | None = Field(default=None, description="Content of the message")
+    tool_call_id: str | None = Field(
+        default=None, description="Tool call ID for tool role messages"
+    )
+    tool_calls: list[Any] | None = Field(default=None, description="Tool calls from the model")
 
 
 class ChatCompletionRequest(BaseModel):
@@ -26,14 +30,23 @@ class ChatCompletionRequest(BaseModel):
     top_p: float | None = Field(default=1.0, ge=0, le=1)
     stream: bool = Field(default=False)
     stop: list[str] | str | None = Field(default=None)
+    tools: list[Any] | None = Field(default=None, description="List of tools the model may call")
+    tool_choice: Any | None = Field(default=None, description="Controls which tool is called")
+    response_format: Any | None = Field(
+        default=None, description="Specifies the format of the response"
+    )
 
 
 class Choice(BaseModel):
     """Completion choice."""
 
     index: int = Field(default=0)
-    message: Message = Field(...)
-    finish_reason: str | None = Field(default="stop")
+    message: dict[str, Any] = Field(
+        default_factory=dict, description="Response message with optional tool_calls"
+    )
+    finish_reason: Literal["stop", "length", "tool_calls"] | None = Field(
+        default="stop", description="Reason for completion"
+    )
 
 
 class Usage(BaseModel):
@@ -59,8 +72,10 @@ class StreamChoice(BaseModel):
     """Streaming completion choice."""
 
     index: int = Field(default=0)
-    delta: dict[str, Any] = Field(default_factory=dict)
-    finish_reason: str | None = Field(default=None)
+    delta: dict[str, Any] = Field(default_factory=dict, description="Delta content")
+    finish_reason: Literal["stop", "length", "tool_calls"] | None = Field(
+        default=None, description="Reason for completion"
+    )
 
 
 class ChatCompletionStreamResponse(BaseModel):
